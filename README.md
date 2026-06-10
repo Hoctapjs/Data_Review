@@ -1,60 +1,60 @@
 # Review Data Generator
 
-Cong cu tao du lieu review san pham gia lap bang tieng Anh (chu de hair extensions).
-Chay tren trinh duyet, khong can biet code de su dung.
+Công cụ tạo dữ liệu review sản phẩm giả lập bằng tiếng Anh (chủ đề hair extensions).
+Chạy trên trình duyệt, không cần biết code để sử dụng.
 
 ---
 
-## Cach chay
+## Cách chạy
 
-### Buoc 1 - Cai Python
+### Bước 1 — Cài Python
 
-Tai Python tai [python.org](https://www.python.org/downloads/) (chon phien ban 3.10 tro len).
-Khi cai, tick vao o **"Add Python to PATH"**.
+Tải Python tại [python.org](https://www.python.org/downloads/) (chọn phiên bản 3.10 trở lên).
+Khi cài, tick vào ô **"Add Python to PATH"**.
 
-### Buoc 2 - Cai thu vien
+### Bước 2 — Cài thư viện
 
-Mo terminal (Command Prompt hoac PowerShell), chay:
+Mở terminal (Command Prompt hoặc PowerShell), chạy:
 
 ```
 pip install -r requirements.txt
 ```
 
-### Buoc 3 - Khoi chay app
+### Bước 3 — Khởi chạy app
 
 ```
 streamlit run app.py
 ```
 
-Trinh duyet se tu mo tai `http://localhost:8501`.
+Trình duyệt sẽ tự mở tại `http://localhost:8501`.
 
 ---
 
-## Cach dung
+## Cách dùng
 
-Giao dien co thanh dieu khien ben trai. Chinh cac thong so roi bam **"Sinh du lieu"**.
+Giao diện có thanh điều khiển bên trái. Chỉnh các thông số rồi bấm **"Sinh dữ liệu"**.
 
-| Thong so | Y nghia |
+| Thông số | Ý nghĩa |
 |---|---|
-| **So dong** | Bao nhieu review can tao (vi du: 10.000) |
-| **Positive / Neutral** | Loai review muon sinh - tich/bo tich de bat/tat |
-| **Trong so** | Ti le moi loai (vi du Positive 70, Neutral 30 -> 70% review tich cuc) |
-| **Sinh email gia** | Bat neu muon cot `reviewer_email` co du lieu |
-| **Tu ngay / Den ngay** | Khoang thoi gian ngau nhien cho `review_date` |
-| **Co dinh seed** | Bat de moi lan bam sinh ra ket qua giong het nhau (tien cho test) |
+| **Số dòng** | Bao nhiêu review cần tạo (ví dụ: 10.000) |
+| **Positive / Neutral** | Loại review muốn sinh — tích/bỏ tích để bật/tắt |
+| **Trọng số** | Tỉ lệ mỗi loại (ví dụ Positive 70, Neutral 30 → 70% review tích cực) |
+| **Sinh email giả** | Bật nếu muốn cột `reviewer_email` có dữ liệu |
+| **Từ ngày / Đến ngày** | Khoảng thời gian ngẫu nhiên cho `review_date` |
+| **Cố định seed** | Bật để mỗi lần bấm sinh ra kết quả giống hệt nhau (tiện cho test) |
 
-Sau khi sinh xong, tai file ve bang nut **Tai CSV** hoac **Tai JSON**.
+Sau khi sinh xong, tải file về bằng nút **Tải CSV** hoặc **Tải JSON**.
 
 ---
 
-## Tuy chinh noi dung review
+## Tùy chỉnh nội dung review
 
-Toan bo noi dung review duoc lap ghep tu cac "ngan hang cau" trong file [app.py](app.py).
-Khong can hieu code - chi can tim dung cho va sua van ban trong dau ngoac kep.
+Toàn bộ nội dung review được lắp ghép từ các "ngân hàng câu" trong file [app.py](app.py).
+Không cần hiểu code — chỉ cần tìm đúng chỗ và sửa văn bản trong dấu ngoặc kép.
 
-### Ten nguoi review
+### Tên người review
 
-Tim dong co `REVIEWER_NAMES` (khoang dong 247):
+Tìm dòng có `REVIEWER_NAMES` (khoảng dòng 247):
 
 ```python
 REVIEWER_NAMES = [
@@ -62,16 +62,16 @@ REVIEWER_NAMES = [
 ]
 ```
 
-Them, xoa hoac doi ten tuy y. Moi ten la mot chuoi trong dau ngoac kep, cach nhau bang dau phay.
+Thêm, xóa hoặc đổi tên tùy ý. Mỗi tên là một chuỗi trong dấu ngoặc kép, cách nhau bằng dấu phẩy.
 
 ---
 
-### Tieu de review (Title)
+### Tiêu đề review (Title)
 
-Tim `TITLE_TEMPLATES` (khoang dong 22). Co hai nhom:
+Tìm `TITLE_TEMPLATES` (khoảng dòng 22). Có hai nhóm:
 
-- **Positive** - dung cho review 4-5 sao
-- **Neutral** - dung cho review 3 sao
+- **Positive** — dùng cho review 4–5 sao
+- **Neutral** — dùng cho review 3 sao
 
 ```python
 "Positive": [
@@ -81,43 +81,43 @@ Tim `TITLE_TEMPLATES` (khoang dong 22). Co hai nhom:
 ],
 ```
 
-Them dong moi theo dung dinh dang:
+Thêm dòng mới theo đúng định dạng:
 ```python
-"Cau tieu de moi cua ban",
+"Câu tiêu đề mới của bạn",
 ```
 
-> Neu muon chen tinh tu ngau nhien vao tieu de, dung `{adj1}` hoac `{adj2}` trong cau.
-> Vi du: `"These are {adj1} and so {adj2}"` -> se tu dien tinh tu tu danh sach `POS_ADJ`.
+> Nếu muốn chèn tính từ ngẫu nhiên vào tiêu đề, dùng `{adj1}` hoặc `{adj2}` trong câu.
+> Ví dụ: `"These are {adj1} and so {adj2}"` → sẽ tự điền tính từ từ danh sách `POS_ADJ`.
 
-Danh sach tinh tu Positive o `POS_ADJ` (dong 20), tinh tu Neutral o `NEU_MILD_ADJ` (dong 39).
+Danh sách tính từ Positive ở `POS_ADJ` (dòng 20), tính từ Neutral ở `NEU_MILD_ADJ` (dòng 39).
 
 ---
 
-### Noi dung review (Body)
+### Nội dung review (Body)
 
-Tim `BODY_BANK` (khoang dong 43). Moi nhom sentiment co 6 phan:
+Tìm `BODY_BANK` (khoảng dòng 43). Mỗi nhóm sentiment có 6 phần:
 
-| Phan | Vai tro |
+| Phần | Vai trò |
 |---|---|
-| `opener` | Cau mo dau |
-| `quality` | Nhan xet ve chat luong |
-| `color` | Nhan xet ve mau sac |
-| `usage` | Nhan xet ve cach su dung |
-| `extra` | Chi tiet them |
-| `closer` | Cau ket |
+| `opener` | Câu mở đầu |
+| `quality` | Nhận xét về chất lượng |
+| `color` | Nhận xét về màu sắc |
+| `usage` | Nhận xét về cách sử dụng |
+| `extra` | Chi tiết thêm |
+| `closer` | Câu kết |
 
-Them cau moi vao bat ky phan nao theo cu phap:
+Thêm câu mới vào bất kỳ phần nào theo cú pháp:
 ```python
-"Cau moi cua ban.",
+"Câu mới của bạn.",
 ```
 
-Dau phay o cuoi moi cau la bat buoc (tru cau cuoi cung trong danh sach).
+Dấu phẩy ở cuối mỗi câu là bắt buộc (trừ câu cuối cùng trong danh sách).
 
 ---
 
-### Review ngan (mot cau)
+### Review ngắn (một câu)
 
-Tim `SHORT_BODIES` (khoang dong 194). Khoang 10% review se duoc chon ngau nhien tu day.
+Tìm `SHORT_BODIES` (khoảng dòng 194). Khoảng 10% review sẽ được chọn ngẫu nhiên từ đây.
 
 ```python
 "Positive": [
@@ -127,20 +127,20 @@ Tim `SHORT_BODIES` (khoang dong 194). Khoang 10% review se duoc chon ngau nhien 
 ],
 ```
 
-Them hoac xoa cau tuong tu nhu tren.
+Thêm hoặc xóa câu tương tự như trên.
 
 ---
 
-## Cau truc du lieu dau ra
+## Cấu trúc dữ liệu đầu ra
 
-Moi dong trong file CSV/JSON co cac cot sau:
+Mỗi dòng trong file CSV/JSON có các cột sau:
 
-| Cot | Kieu | Vi du |
+| Cột | Kiểu | Ví dụ |
 |---|---|---|
 | `title` | text | "Perfect color match for me" |
 | `body` | text | "Okay I'm obsessed with these..." |
-| `rating` | so (1-5) | 5 |
-| `review_date` | ngay (YYYY-MM-DD) | "2025-03-14" |
+| `rating` | số (1–5) | 5 |
+| `review_date` | ngày (YYYY-MM-DD) | "2025-03-14" |
 | `reviewer_name` | text | "Emily R." |
-| `reviewer_email` | text hoac rong | "emily123@example.com" |
+| `reviewer_email` | text hoặc rỗng | "emily123@example.com" |
 | `sentiment` | Positive / Neutral | "Positive" |
