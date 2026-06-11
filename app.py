@@ -36,6 +36,28 @@ TITLE_TEMPLATES = {
         "Does the job, but {flaw}", "{adj1} enough, with some downsides",
     ],
 }
+TITLE_TEMPLATES["Positive"] += [
+    "Perfect color match for me",
+    "Worth it",
+    "Amazing!",
+    "Great extensions!",
+    "Perfect for my wedding day!",
+    "You can't even tell I'm wearing clip ins",
+    "These are GORGEOUS !!!",
+    "So happy with these",
+    "Exceeded my expectations",
+    "Exactly what I was looking for",
+]
+
+TITLE_TEMPLATES["Neutral"] += [
+    "Not seamless",
+    "I liked them",
+    "Good but not perfect",
+    "Not for thin hair",
+    "Pretty good overall",
+    "Nice but a few issues",
+]
+
 NEU_MILD_ADJ = ["Decent", "Okay", "Fine", "Acceptable", "Average"]
 NEU_FLAW = ["thin", "shiny", "shed-prone", "pricey", "stiff"]
 
@@ -283,35 +305,115 @@ def build_title(sentiment):
     return title[:1].upper() + title[1:]
 
 
-BODY_SECTIONS = [
-    ("shipping",  0.25),   # 20-30%
-    ("support",   0.20),   # 15-25%
-    ("quality",   0.90),   # 90%
-    ("color",     0.60),   # 50-70%
-    ("fit_usage", 0.70),   # 60-80%
-    ("results",   0.80),   # 70-90%
-    ("extra",     0.25),   # 20-30%
-    ("value",     0.35),   # 30-40%
+# ----------------------------------------------------------------------------
+# STORY-BASED BANKS - các mảnh ghép kể chuyện mua hàng (dùng chung 2 sắc thái)
+# ----------------------------------------------------------------------------
+LIFE_EVENTS = [
+    "I bought these for my wedding and they photographed beautifully.",
+    "I got these for prom and honestly they made me feel so much more confident.",
+    "After having my second baby my hair started thinning and these helped a lot.",
+    "I've been dealing with hair loss recently so I wanted something to add volume.",
+    "I ordered these for a family vacation and ended up wearing them almost every day.",
+    "My natural hair has gotten thinner over the last few years so I wanted some extra fullness.",
+    "I needed something quick for an event and these worked perfectly.",
+    "I bought these for engagement photos and they looked amazing on camera.",
+    "I wanted longer hair without committing to permanent extensions.",
+    "I've always had fine hair so I was looking for extra thickness.",
+]
+
+HAIR_SITUATIONS = [
+    "My hair is naturally pretty thin.",
+    "I have shoulder length hair and wanted more volume.",
+    "I've always struggled with fine hair.",
+    "My hair started shedding a lot this year.",
+    "I have thick hair but wanted extra length.",
+    "My ends have been looking really thin lately.",
+    "I wanted fuller hair without damaging my natural hair.",
+    "I've been trying to grow my hair out but it's taking forever.",
+]
+
+PRODUCT_DETAILS = [
+    "I ordered the 22 inch version.",
+    "I went with the 24 inch set.",
+    "I chose Chocolate Brown.",
+    "I picked Neutral Brown and it matched surprisingly well.",
+    "I ordered Platinum Blonde.",
+    "My hair is naturally dark brown.",
+    "I have fine hair and was worried the clips would show.",
+]
+
+MINOR_CONS = [
+    "The color looked a little darker in person but blended fine.",
+    "It took me a couple tries to get the placement right.",
+    "I probably should have ordered a second pack for extra volume.",
+    "The clips felt bulky at first but I got used to them.",
+    "I wish I had gone one shade lighter.",
+    "The ends were slightly thinner than I expected.",
+    "The first time putting them in took some practice.",
+    "I had to trim them slightly to blend better with my haircut.",
+]
+
+RESULTS = [
+    "Nobody could tell I was wearing extensions.",
+    "The blend was seamless and looked completely natural.",
+    "I got so many compliments on my hair.",
+    "My stylist was impressed with the quality.",
+    "Even my husband noticed the difference.",
+    "They looked amazing in photos.",
+    "The extra volume made such a difference.",
+    "They gave me the long hair I've always wanted.",
+]
+
+RECOMMENDATIONS = [
+    "I'd definitely buy these again.",
+    "Really happy with this purchase.",
+    "Would absolutely recommend them.",
+    "Worth every penny in my opinion.",
+    "I'll probably order another set.",
+    "So glad I decided to try them.",
+    "I'd recommend them to anyone wanting more volume.",
+    "Definitely one of my better beauty purchases.",
 ]
 
 
 def build_body(sentiment):
-    # ~10% là review ngắn một câu (giống phân bố thật)
-    if random.random() < 0.10:
+    # ~12% là review ngắn một câu (giống phân bố thật)
+    if random.random() < 0.12:
         return random.choice(SHORT_BODIES[sentiment])
 
-    bank = BODY_BANK[sentiment]
-    parts = [random.choice(bank["opener"])]
-    for key, prob in BODY_SECTIONS:
-        if random.random() < prob:
-            parts.append(random.choice(bank[key]))
-    parts.append(random.choice(bank["closer"]))
+    parts = []
+
+    if random.random() < 0.8:
+        parts.append(random.choice(LIFE_EVENTS))
+
+    parts.append(random.choice(HAIR_SITUATIONS))
+
+    if random.random() < 0.7:
+        parts.append(random.choice(PRODUCT_DETAILS))
+
+    parts.append(random.choice(BODY_BANK[sentiment]["quality"]))
+
+    if random.random() < 0.8:
+        parts.append(random.choice(BODY_BANK[sentiment]["color"]))
+
+    if random.random() < 0.6:
+        parts.append(random.choice(BODY_BANK[sentiment]["fit_usage"]))
+
+    if sentiment == "Positive":
+        if random.random() < 0.35:
+            parts.append(random.choice(MINOR_CONS))
+    else:
+        parts.append(random.choice(MINOR_CONS))
+
+    parts.append(random.choice(RESULTS))
+    parts.append(random.choice(RECOMMENDATIONS))
+
     return " ".join(parts)
 
 REVIEWER_NAMES = [
-    "Amazon Customer", "RyB", "Andres Alomia", "Bella", "Julien", "Nicole", "Sara",
-    "Zoey Lebrun", "Rachel Moriel", "Emily R.", "Jessica M.", "Hannah", "Olivia Grace",
-    "Sophie T.", "Megan", "Chloe", "Ashley", "Grace W.", "Lauren", "Mia",
+    "Emily", "Jessica", "Ashley", "Lauren", "Megan", "Rachel", "Nicole", "Amanda",
+    "Sarah", "Jennifer", "Olivia", "Sophia", "Emma", "Chloe", "Grace", "Bella",
+    "Candice", "Shyan", "Marcia", "Nikki", "Makayla", "Noelle", "Mandi", "Zoey",
 ]
 
 
