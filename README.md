@@ -95,16 +95,20 @@ Danh sách tính từ Positive ở `POS_ADJ` (dòng 20), tính từ Neutral ở 
 
 ### Nội dung review (Body)
 
-Tìm `BODY_BANK` (khoảng dòng 43). Mỗi nhóm sentiment có 6 phần:
+Tìm `BODY_BANK` (khoảng dòng 43). Mỗi nhóm sentiment có các phần sau, mỗi phần được chọn ngẫu nhiên theo xác suất riêng:
 
-| Phần | Vai trò |
-|---|---|
-| `opener` | Câu mở đầu |
-| `quality` | Nhận xét về chất lượng |
-| `color` | Nhận xét về màu sắc |
-| `usage` | Nhận xét về cách sử dụng |
-| `extra` | Chi tiết thêm |
-| `closer` | Câu kết |
+| Phần | Vai trò | Xác suất xuất hiện |
+|---|---|---|
+| `opener` | Câu mở đầu | Luôn có |
+| `shipping` | Nhận xét về giao hàng | ~25% |
+| `support` | Nhận xét về hỗ trợ khách hàng | ~20% |
+| `quality` | Nhận xét về chất lượng | ~90% |
+| `color` | Nhận xét về màu sắc | ~60% |
+| `fit_usage` | Nhận xét về cách đeo / sử dụng | ~70% |
+| `results` | Nhận xét về kết quả sau khi dùng | ~80% |
+| `extra` | Chi tiết thêm / cảm xúc cá nhân | ~25% |
+| `value` | Nhận xét về giá trị / giá cả | ~35% |
+| `closer` | Câu kết | Luôn có |
 
 Thêm câu mới vào bất kỳ phần nào theo cú pháp:
 ```python
@@ -113,11 +117,20 @@ Thêm câu mới vào bất kỳ phần nào theo cú pháp:
 
 Dấu phẩy ở cuối mỗi câu là bắt buộc (trừ câu cuối cùng trong danh sách).
 
+Để thay đổi xác suất xuất hiện của một phần, tìm `BODY_SECTIONS` (khoảng dòng 283) và chỉnh số thập phân tương ứng (0.0 = không bao giờ, 1.0 = luôn luôn):
+```python
+BODY_SECTIONS = [
+    ("shipping",  0.25),
+    ("quality",   0.90),
+    ...
+]
+```
+
 ---
 
 ### Review ngắn (một câu)
 
-Tìm `SHORT_BODIES` (khoảng dòng 194). Khoảng 10% review sẽ được chọn ngẫu nhiên từ đây.
+Tìm `SHORT_BODIES` (khoảng dòng 194). Khoảng 10% review sẽ được chọn ngẫu nhiên từ đây thay vì ghép nhiều phần.
 
 ```python
 "Positive": [
