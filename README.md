@@ -54,15 +54,17 @@ Không cần hiểu code — chỉ cần tìm đúng chỗ và sửa văn bản 
 
 ### Tên người review
 
-Tìm `REVIEWER_NAMES` (khoảng dòng 420):
+Tìm `REVIEWER_NAMES` (khoảng dòng 413):
 
 ```python
 REVIEWER_NAMES = [
-    "Emily", "Jessica", "Ashley", "Lauren", ...
+    "Emily", "Jessica M.", "Ashley", "Lauren K.", ...
 ]
 ```
 
 Thêm, xóa hoặc đổi tên tùy ý. Mỗi tên là một chuỗi trong dấu ngoặc kép, cách nhau bằng dấu phẩy.
+
+> Email giả được sinh theo dạng `tên@gmail.com` (ví dụ: `emily123@gmail.com`).
 
 ---
 
@@ -144,6 +146,6 @@ Mỗi dòng trong file CSV/JSON có các cột sau:
 | `body` | text | "I bought these for my wedding..." |
 | `rating` | số (1–5) | 5 |
 | `review_date` | ngày (YYYY-MM-DD) | "2025-03-14" |
-| `reviewer_name` | text | "Emily" |
-| `reviewer_email` | text hoặc rỗng | "emily123@example.com" |
+| `reviewer_name` | text | "Jessica M." |
+| `reviewer_email` | text hoặc rỗng | "jessica123@gmail.com" |
 | `sentiment` | Positive / Neutral | "Positive" |

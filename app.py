@@ -411,9 +411,10 @@ def build_body(sentiment):
     return " ".join(parts)
 
 REVIEWER_NAMES = [
-    "Emily", "Jessica", "Ashley", "Lauren", "Megan", "Rachel", "Nicole", "Amanda",
-    "Sarah", "Jennifer", "Olivia", "Sophia", "Emma", "Chloe", "Grace", "Bella",
-    "Candice", "Shyan", "Marcia", "Nikki", "Makayla", "Noelle", "Mandi", "Zoey",
+    "Emily", "Jessica M.", "Ashley", "Lauren K.", "Megan", "Rachel", "Nicole T.",
+    "Amanda", "Sarah", "Jennifer L.", "Olivia", "Sophia R.", "Emma", "Chloe",
+    "Grace W.", "Bella", "Candice", "Shyan", "Marcia B.", "Nikki", "Makayla",
+    "Noelle", "Mandi J.", "Zoey", "Hannah", "Tiffany R.", "Brooke", "Kayla M.",
 ]
 
 
@@ -438,7 +439,7 @@ def sinh_du_lieu(so_dong, sac_thai_chon, trong_so, ngay_bat_dau, ngay_ket_thuc,
             "review_date": (ngay_bat_dau + timedelta(days=random.randint(0, so_ngay))).isoformat(),
             "reviewer_name": random.choice(REVIEWER_NAMES),
             "reviewer_email": "" if not them_email
-            else f"{random.choice(REVIEWER_NAMES).split()[0].lower()}{random.randint(1, 999)}@example.com",
+            else f"{random.choice(REVIEWER_NAMES).split()[0].lower()}{random.randint(1, 999)}@gmail.com",
             "sentiment": sentiment,
         }
         records.append(record)
