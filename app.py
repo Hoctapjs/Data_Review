@@ -85,7 +85,7 @@ BODY_BANK = {
             "The roots are a touch darker which actually helps it look natural.",
             "My mom couldn't tell where my hair ended and the extensions started.",
         ],
-        "usage": [
+        "fit_usage": [
             "Clipped them in straight out of the box, didn't even style them, and they looked amazing.",
             "The clips actually hold, they don't slide around all day like cheaper ones.",
             "Took me like 5 minutes to put in once I got the hang of it.",
@@ -97,19 +97,55 @@ BODY_BANK = {
             "Heat styling them is no problem, curls last me two whole days.",
             "Came with a little gift and a thank you note, such a sweet touch.",
         ],
+        "results": [
+            "Most people probably wouldn't notice, but I can tell they're extensions.",
+            "The overall look is decent once styled properly.",
+            "They add volume, which is what I wanted.",
+            "The end result is okay but not amazing.",
+        ],
         "extra": [
-            "Wore them for 12 hours straight and forgot they were even in.",
-            "My only regret is not ordering them sooner.",
-            "I sleep in them sometimes and they're totally fine the next morning.",
-            "Even my husband noticed and he never notices anything lol.",
-            "I keep finding excuses to wear them, even just running errands.",
-            "Customer service answered my sizing question within an hour too.",
-            "Shipping was way faster than I expected, came in two days.",
-            "Bought a second set in a lighter shade for summer already.",
-            "They survived a beach trip with salt water and everything.",
-            "Honestly looks better than the $400 ones my friend has.",
-            "I've gotten stopped twice asking what my 'natural' hair routine is.",
-            "Took photos for a friend who didn't believe they were clip-ins.",
+            "I've struggled with thinning hair for years, so this meant a lot to me.",
+            "It helped me feel more like myself again.",
+            "I felt confident walking into an event without worrying about my hair.",
+            "For the first time in a long while, I actually enjoyed styling my hair.",
+            "It made a noticeable difference in how I felt about my appearance.",
+            "I wasn't expecting such a boost in confidence.",
+            "Getting compliments again felt really nice.",
+            "I finally stopped stressing about my hair every morning.",
+            "It helped me feel polished and put together.",
+            "I wish I had found this sooner.",
+        ],
+        "value": [
+            "I've spent twice as much on extensions before and honestly these look better.",
+            "Considering the quality, I expected them to cost much more.",
+            "Not the cheapest option out there, but I'm happy with what I received.",
+            "After wearing them for a few months, I definitely feel like I got my money's worth.",
+            "The quality surprised me given the price point.",
+            "I was hesitant because of the price at first, but I don't regret it.",
+            "They've lasted much longer than some more expensive sets I've owned.",
+            "For something I wear this often, the investment feels completely justified.",
+            "I've already ordered another set, which probably says enough.",
+            "The results were much better than I expected for what I paid.",
+            "Honestly, these ended up being a better purchase than some salon treatments I've paid for.",
+            "The price felt reasonable once I saw the quality in person.",
+            "I would rather buy these again than spend more on a premium brand.",
+            "They still look great months later, so I feel good about the purchase.",
+            "Looking back, I wish I had bought them sooner.",
+        ],
+        "shipping": [
+            "Shipping took a little longer than expected but it was absolutely worth the wait.",
+            "Arrived faster than I thought it would.",
+            "The order arrived right on time and was packaged beautifully.",
+            "I was nervous ordering online but everything arrived perfectly.",
+            "It took about three weeks to arrive but the quality made up for it immediately.",
+            "The wait felt long but once I opened the package I understood why.",
+        ],
+        "support": [
+            "Customer service was incredibly helpful when I had questions about color matching.",
+            "The support team helped me pick the perfect shade.",
+            "They responded to my email much faster than expected.",
+            "Customer service was kind and patient throughout the process.",
+            "I needed help choosing between two colors and they guided me perfectly.",
         ],
         "closer": [
             "100% buying another set, probably in a different length.",
@@ -158,15 +194,19 @@ BODY_BANK = {
             "Came out darker than the website photo, just a heads up.",
             "Blends okay from far away but up close you can sort of tell.",
         ],
-        "usage": [
+        "fit_usage": [
             "Clipping them in is easy enough, no complaints there.",
             "The clips are kinda bulky though, you can feel them a bit.",
             "Takes some fiddling to get them to blend right.",
             "Needed a bit of work before they looked believable.",
             "The clips dig in a little if I wear them all day.",
-            "Packaging was pretty basic, nothing extra included.",
-            "Shipping took longer than I expected too.",
             "Had to trim them a bit to get a natural shape.",
+        ],
+        "results": [
+            "The end result is alright, not quite what I pictured.",
+            "Adds some volume but the look is just okay.",
+            "Decent once styled, but I can tell up close.",
+            "Does what it says, nothing wow about the result.",
         ],
         "extra": [
             "I'll probably keep them for occasional use rather than daily.",
@@ -175,6 +215,23 @@ BODY_BANK = {
             "They're fine for photos but I can tell up close in person.",
             "Wish they'd included a few extra clips honestly.",
             "Texture isn't bad but it's not the wow I see in other reviews.",
+        ],
+        "value": [
+            "For the price it's about what you'd expect, no more.",
+            "Not sure it's worth it, but it's not a rip-off either.",
+            "Okay value, I've seen better for similar money.",
+            "Fair price I guess, just don't expect premium.",
+        ],
+        "shipping": [
+            "Shipping took longer than I expected honestly.",
+            "Arrived on time, packaging was pretty basic though.",
+            "Delivery was fine, nothing fast but nothing terrible.",
+            "Took a couple weeks to show up, just so you know.",
+        ],
+        "support": [
+            "Reached out with a question and the reply was okay, a bit slow.",
+            "Customer service was fine, nothing that stood out.",
+            "Got my answer eventually, took a little while.",
         ],
         "closer": [
             "Fine for the odd occasion, just not an everyday thing for me.",
@@ -226,7 +283,16 @@ def build_title(sentiment):
     return title[:1].upper() + title[1:]
 
 
-MIDDLE_CATS = ["quality", "color", "usage", "extra"]
+BODY_SECTIONS = [
+    ("shipping",  0.25),   # 20-30%
+    ("support",   0.20),   # 15-25%
+    ("quality",   0.90),   # 90%
+    ("color",     0.60),   # 50-70%
+    ("fit_usage", 0.70),   # 60-80%
+    ("results",   0.80),   # 70-90%
+    ("extra",     0.25),   # 20-30%
+    ("value",     0.35),   # 30-40%
+]
 
 
 def build_body(sentiment):
@@ -235,12 +301,10 @@ def build_body(sentiment):
         return random.choice(SHORT_BODIES[sentiment])
 
     bank = BODY_BANK[sentiment]
-    # luôn có opener + closer, chọn ngẫu nhiên 2-4 câu giữa (giữ đúng thứ tự)
-    chosen = set(random.sample(MIDDLE_CATS, random.randint(2, 4)))
-    order = [c for c in MIDDLE_CATS if c in chosen]
-
     parts = [random.choice(bank["opener"])]
-    parts += [random.choice(bank[c]) for c in order]
+    for key, prob in BODY_SECTIONS:
+        if random.random() < prob:
+            parts.append(random.choice(bank[key]))
     parts.append(random.choice(bank["closer"]))
     return " ".join(parts)
 
