@@ -54,11 +54,11 @@ Không cần hiểu code — chỉ cần tìm đúng chỗ và sửa văn bản 
 
 ### Tên người review
 
-Tìm dòng có `REVIEWER_NAMES` (khoảng dòng 247):
+Tìm `REVIEWER_NAMES` (khoảng dòng 420):
 
 ```python
 REVIEWER_NAMES = [
-    "Amazon Customer", "RyB", "Andres Alomia", "Bella", ...
+    "Emily", "Jessica", "Ashley", "Lauren", ...
 ]
 ```
 
@@ -95,42 +95,32 @@ Danh sách tính từ Positive ở `POS_ADJ` (dòng 20), tính từ Neutral ở 
 
 ### Nội dung review (Body)
 
-Tìm `BODY_BANK` (khoảng dòng 43). Mỗi nhóm sentiment có các phần sau, mỗi phần được chọn ngẫu nhiên theo xác suất riêng:
+Review được tạo theo kiểu **kể chuyện** — ghép các mảnh từ nhiều ngân hàng câu toàn cục, theo thứ tự tự nhiên như người thật viết. Mỗi ngân hàng dùng chung cho cả hai sắc thái Positive và Neutral.
 
-| Phần | Vai trò | Xác suất xuất hiện |
-|---|---|---|
-| `opener` | Câu mở đầu | Luôn có |
-| `shipping` | Nhận xét về giao hàng | ~25% |
-| `support` | Nhận xét về hỗ trợ khách hàng | ~20% |
-| `quality` | Nhận xét về chất lượng | ~90% |
-| `color` | Nhận xét về màu sắc | ~60% |
-| `fit_usage` | Nhận xét về cách đeo / sử dụng | ~70% |
-| `results` | Nhận xét về kết quả sau khi dùng | ~80% |
-| `extra` | Chi tiết thêm / cảm xúc cá nhân | ~25% |
-| `value` | Nhận xét về giá trị / giá cả | ~35% |
-| `closer` | Câu kết | Luôn có |
+| Ngân hàng | Vị trí trong code | Vai trò | Xác suất xuất hiện |
+|---|---|---|---|
+| `LIFE_EVENTS` | ~dòng 308 | Lý do mua / dịp sử dụng | ~80% |
+| `HAIR_SITUATIONS` | ~dòng 320 | Tình trạng tóc của người dùng | Luôn có |
+| `PRODUCT_DETAILS` | ~dòng 330 | Chi tiết sản phẩm đã chọn (màu, độ dài) | ~70% |
+| `BODY_BANK[sentiment]["quality"]` | ~dòng 43 | Nhận xét về chất lượng | Luôn có |
+| `BODY_BANK[sentiment]["color"]` | ~dòng 43 | Nhận xét về màu sắc | ~80% |
+| `BODY_BANK[sentiment]["fit_usage"]` | ~dòng 43 | Nhận xét về cách đeo / sử dụng | ~60% |
+| `MINOR_CONS` | ~dòng 340 | Nhược điểm nhỏ (Positive: 35%, Neutral: luôn có) | 35–100% |
+| `RESULTS` | ~dòng 352 | Kết quả sau khi dùng | Luôn có |
+| `RECOMMENDATIONS` | ~dòng 362 | Câu kết / khuyến nghị | Luôn có |
 
-Thêm câu mới vào bất kỳ phần nào theo cú pháp:
+Thêm câu mới vào bất kỳ ngân hàng nào theo cú pháp:
 ```python
 "Câu mới của bạn.",
 ```
 
 Dấu phẩy ở cuối mỗi câu là bắt buộc (trừ câu cuối cùng trong danh sách).
 
-Để thay đổi xác suất xuất hiện của một phần, tìm `BODY_SECTIONS` (khoảng dòng 283) và chỉnh số thập phân tương ứng (0.0 = không bao giờ, 1.0 = luôn luôn):
-```python
-BODY_SECTIONS = [
-    ("shipping",  0.25),
-    ("quality",   0.90),
-    ...
-]
-```
-
 ---
 
 ### Review ngắn (một câu)
 
-Tìm `SHORT_BODIES` (khoảng dòng 194). Khoảng 10% review sẽ được chọn ngẫu nhiên từ đây thay vì ghép nhiều phần.
+Tìm `SHORT_BODIES` (khoảng dòng 194). Khoảng 12% review sẽ được chọn ngẫu nhiên từ đây thay vì ghép nhiều phần.
 
 ```python
 "Positive": [
@@ -151,9 +141,9 @@ Mỗi dòng trong file CSV/JSON có các cột sau:
 | Cột | Kiểu | Ví dụ |
 |---|---|---|
 | `title` | text | "Perfect color match for me" |
-| `body` | text | "Okay I'm obsessed with these..." |
+| `body` | text | "I bought these for my wedding..." |
 | `rating` | số (1–5) | 5 |
 | `review_date` | ngày (YYYY-MM-DD) | "2025-03-14" |
-| `reviewer_name` | text | "Emily R." |
+| `reviewer_name` | text | "Emily" |
 | `reviewer_email` | text hoặc rỗng | "emily123@example.com" |
 | `sentiment` | Positive / Neutral | "Positive" |
