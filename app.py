@@ -410,12 +410,55 @@ def build_body(sentiment):
 
     return " ".join(parts)
 
-REVIEWER_NAMES = [
-    "Emily", "Jessica M.", "Ashley", "Lauren K.", "Megan", "Rachel", "Nicole T.",
-    "Amanda", "Sarah", "Jennifer L.", "Olivia", "Sophia R.", "Emma", "Chloe",
-    "Grace W.", "Bella", "Candice", "Shyan", "Marcia B.", "Nikki", "Makayla",
-    "Noelle", "Mandi J.", "Zoey", "Hannah", "Tiffany R.", "Brooke", "Kayla M.",
+_FIRST_NAMES = [
+    "Emily", "Jessica", "Ashley", "Lauren", "Megan", "Rachel", "Nicole", "Amanda",
+    "Sarah", "Jennifer", "Olivia", "Sophia", "Emma", "Chloe", "Grace", "Bella",
+    "Candice", "Shyan", "Marcia", "Nikki", "Makayla", "Noelle", "Mandi", "Zoey",
+    "Hannah", "Tiffany", "Brooke", "Kayla", "Madison", "Brittany", "Samantha",
+    "Taylor", "Danielle", "Heather", "Amber", "Chelsea", "Courtney", "Haley",
+    "Katelyn", "Lindsay", "Melissa", "Paige", "Shelby", "Stephanie", "Whitney",
+    "Alyssa", "Brianna", "Cassandra", "Destiny", "Faith", "Gabrielle", "Hope",
+    "Jasmine", "Kaitlyn", "Leah", "Morgan", "Natalie", "Peyton", "Quinn",
+    "Riley", "Sierra", "Trinity", "Valerie", "Vanessa", "Victoria", "Wendy",
+    "Abigail", "Alexis", "Allison", "Ariel", "Aubrey", "Autumn", "Bailey",
+    "Brenda", "Carla", "Carmen", "Caroline", "Claire", "Crystal", "Dana",
+    "Dawn", "Denise", "Diana", "Elena", "Elise", "Ellie", "Eva", "Fiona",
+    "Gina", "Hailey", "Harper", "Holly", "Isabel", "Isla", "Jade", "Jamie",
+    "Janet", "Julia", "Julie", "June", "Karen", "Kate", "Katherine", "Kelsey",
+    "Kim", "Kristen", "Laura", "Lily", "Lisa", "Luna", "Lydia", "Mackenzie",
+    "Maria", "Marissa", "Mary", "Maya", "Mia", "Michelle", "Miranda", "Monica",
+    "Nancy", "Nina", "Nora", "Pam", "Patricia", "Priya", "Rebecca", "Regina",
+    "Renee", "Rosa", "Sabrina", "Sandra", "Sara", "Shannon", "Sharon", "Stacy",
+    "Summer", "Susan", "Tamara", "Teresa", "Tori", "Tracy", "Trisha", "Veronica",
+    "Vivian", "Wanda", "Yvonne", "Zoe",
 ]
+
+_LAST_INITIALS = list("ABCDEFGHJKLMNOPQRSTUVWXYZ")
+
+_LAST_NAMES = [
+    "Anderson", "Baker", "Barnes", "Bennett", "Brooks", "Brown", "Butler", "Campbell",
+    "Carter", "Clark", "Collins", "Cook", "Cooper", "Cox", "Davis", "Edwards",
+    "Evans", "Fisher", "Foster", "Garcia", "Gray", "Green", "Griffin", "Hall",
+    "Harris", "Harrison", "Hayes", "Henderson", "Hill", "Howard", "Hughes", "Jackson",
+    "James", "Jenkins", "Johnson", "Jones", "Kelly", "King", "Lee", "Lewis",
+    "Long", "Martin", "Mason", "Miller", "Mitchell", "Moore", "Morgan", "Morris",
+    "Nelson", "Parker", "Patterson", "Perez", "Perry", "Peterson", "Phillips", "Price",
+    "Reed", "Richardson", "Rivera", "Roberts", "Robinson", "Rodriguez", "Rogers", "Ross",
+    "Russell", "Sanders", "Scott", "Simmons", "Smith", "Stewart", "Taylor", "Thomas",
+    "Thompson", "Torres", "Turner", "Walker", "Ward", "Watson", "White", "Williams",
+    "Wilson", "Wood", "Wright", "Young",
+]
+
+
+def _random_reviewer_name():
+    first = random.choice(_FIRST_NAMES)
+    r = random.random()
+    if r < 0.34:
+        return first                                          # chỉ first name
+    elif r < 0.67:
+        return f"{first} {random.choice(_LAST_INITIALS)}."   # first + initial
+    else:
+        return f"{first} {random.choice(_LAST_NAMES)}"       # first + last name
 
 
 # ----------------------------------------------------------------------------
@@ -437,9 +480,9 @@ def sinh_du_lieu(so_dong, sac_thai_chon, trong_so, ngay_bat_dau, ngay_ket_thuc,
             "body": build_body(sentiment),
             "rating": random.choice(RATING[sentiment]),
             "review_date": (ngay_bat_dau + timedelta(days=random.randint(0, so_ngay))).isoformat(),
-            "reviewer_name": random.choice(REVIEWER_NAMES),
+            "reviewer_name": _random_reviewer_name(),
             "reviewer_email": "" if not them_email
-            else f"{random.choice(REVIEWER_NAMES).split()[0].lower()}{random.randint(1, 999)}@gmail.com",
+            else f"{_random_reviewer_name().split()[0].lower()}{random.randint(1, 999)}@gmail.com",
             "sentiment": sentiment,
         }
         records.append(record)

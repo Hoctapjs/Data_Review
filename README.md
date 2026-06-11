@@ -54,15 +54,22 @@ Không cần hiểu code — chỉ cần tìm đúng chỗ và sửa văn bản 
 
 ### Tên người review
 
-Tìm `REVIEWER_NAMES` (khoảng dòng 413):
+Tên được sinh ngẫu nhiên theo 3 dạng (mỗi dạng xác suất ~33%):
 
+| Dạng | Ví dụ |
+|---|---|
+| Chỉ tên | `Emily` |
+| Tên + chữ cái đầu họ | `Emily R.` |
+| Tên + họ đầy đủ | `Emily Rogers` |
+
+Để thêm tên mới, tìm `_FIRST_NAMES` (khoảng dòng 413) và thêm vào danh sách:
 ```python
-REVIEWER_NAMES = [
-    "Emily", "Jessica M.", "Ashley", "Lauren K.", ...
+_FIRST_NAMES = [
+    "Emily", "Jessica", "Ashley", ...
 ]
 ```
 
-Thêm, xóa hoặc đổi tên tùy ý. Mỗi tên là một chuỗi trong dấu ngoặc kép, cách nhau bằng dấu phẩy.
+Để thêm họ mới, tìm `_LAST_NAMES` (khoảng dòng 430) và thêm tương tự.
 
 > Email giả được sinh theo dạng `tên@gmail.com` (ví dụ: `emily123@gmail.com`).
 
@@ -146,6 +153,6 @@ Mỗi dòng trong file CSV/JSON có các cột sau:
 | `body` | text | "I bought these for my wedding..." |
 | `rating` | số (1–5) | 5 |
 | `review_date` | ngày (YYYY-MM-DD) | "2025-03-14" |
-| `reviewer_name` | text | "Jessica M." |
-| `reviewer_email` | text hoặc rỗng | "jessica123@gmail.com" |
+| `reviewer_name` | text | "Emily R." |
+| `reviewer_email` | text hoặc rỗng | "emily123@gmail.com" |
 | `sentiment` | Positive / Neutral | "Positive" |
