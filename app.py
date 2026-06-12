@@ -75,7 +75,6 @@ TITLE_TEMPLATES = {
     "The color just didn't work for me",
     "Good wig, difficult color match",
     "Looks nice but not my shade"
-]
     ],
 }
 TITLE_TEMPLATES["Positive"] += [
