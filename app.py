@@ -6,6 +6,7 @@ Chạy:  streamlit run app.py
 """
 import random
 from datetime import date, timedelta
+from io import BytesIO
 
 import pandas as pd
 import streamlit as st
@@ -581,6 +582,13 @@ def sinh_du_lieu(so_dong, sac_thai_chon, trong_so, ngay_bat_dau, ngay_ket_thuc,
 
 # ----------------------------------------------------------------------------
 # GIAO DIỆN
+def df_to_excel_bytes(df):
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="reviews")
+    return buffer.getvalue()
+
+
 # ----------------------------------------------------------------------------
 st.set_page_config(page_title="Review Data Generator", page_icon="📝", layout="wide")
 st.title("📝 Bộ sinh dữ liệu review sản phẩm (English)")
@@ -657,12 +665,16 @@ if "df" in st.session_state:
 
     csv = df.to_csv(index=False).encode("utf-8-sig")
     json_str = df.to_json(orient="records", force_ascii=False, indent=2)
+    xlsx = df_to_excel_bytes(df)
 
-    d1, d2 = st.columns(2)
+    d1, d2, d3 = st.columns(3)
     d1.download_button("⬇️ Tải CSV", data=csv, file_name="reviews.csv",
                        mime="text/csv", type="primary", use_container_width=True)
     d2.download_button("⬇️ Tải JSON", data=json_str.encode("utf-8"),
                        file_name="reviews.json", mime="application/json",
+                       use_container_width=True)
+    d3.download_button("⬇️ Tải Excel", data=xlsx, file_name="reviews.xlsx",
+                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                        use_container_width=True)
 else:
     st.info("👈 Cấu hình ở thanh bên rồi bấm **Sinh dữ liệu** để bắt đầu.")
