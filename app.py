@@ -76,12 +76,16 @@ TITLE_TEMPLATES["Positive"] += [
 ]
 
 TITLE_TEMPLATES["Neutral"] += [
-    "Not seamless",
-    "I liked them",
-    "Good but not perfect",
-    "Not for thin hair",
-    "Pretty good overall",
-    "Nice but a few issues",
+    "Nice wig but the color wasn't right",
+    "Good quality, wrong shade for me",
+    "Color looked different in person",
+    "Wanted to love it but the color was off",
+    "Quality was good, color not so much",
+    "Close match but not quite",
+    "Nice overall but didn't blend perfectly",
+    "The color just didn't work for me",
+    "Good wig, difficult color match",
+    "Looks nice but not my shade"
 ]
 
 NEU_MILD_ADJ = ["Decent", "Okay", "Fine", "Acceptable", "Average"]
@@ -134,26 +138,22 @@ BODY_BANK = {
     "The density is perfect for everyday wear."
         ],
         "color": [
-            "The color match was spot on, my stylist couldn't even tell.",
-            "They blend in so well that no one has a clue I'm wearing them.",
-            "Color is exactly like the photos, which honestly surprised me.",
-            "I was nervous about the shade but it disappeared right into my hair.",
-            "Got so many compliments and nobody believes it's not all mine.",
-            "Picked the neutral brown and it matched on the first try, shocking.",
-            "Blends seamlessly even though my hair has a bit of an ombre going on.",
-            "The roots are a touch darker which actually helps it look natural.",
-            "My mom couldn't tell where my hair ended and the extensions started.",
-               "My leave out blended almost perfectly.",
-    "Nobody could tell where my real hair ended and the wig began.",
-    "The blend was seamless after a quick flat iron pass.",
-    "It matched my natural hair much better than expected.",
-    "The texture blended really well with my silk pressed hair.",
-    "Even my stylist commented on how natural it looked.",
-    "The U opening was the perfect size for me.",
-    "I barely needed any leave out to make it work.",
-    "The natural black color blended beautifully.",
-    "It genuinely looked like my own hair."    
-        ],
+    "The color matched the product photos really well.",
+    "I was pleasantly surprised by how accurate the color looked in person.",
+    "The shade blended naturally with my own hair.",
+    "The color was exactly what I expected from the listing.",
+    "The color looked very true to the photos online.",
+    "I was worried about ordering online, but the shade ended up being a great match.",
+    "The color worked perfectly with my natural hair.",
+    "It blended much better than I expected.",
+    "The shade looked very natural once installed.",
+    "The color was spot on compared to the website images.",
+    "The tone matched my hair beautifully.",
+    "I had no issues getting the color to blend.",
+    "The shade looked even better in person.",
+    "It matched my hair surprisingly well.",
+    "The color looked realistic and natural."
+],
         "fit_usage": [
     "Installation took less than ten minutes.",
     "It was surprisingly beginner friendly.",
@@ -287,24 +287,19 @@ BODY_BANK = {
     "The quality wasn't the problem for me.",
         ],
         "color": [
-            "Color's close but not an exact match, slightly off from the pics.",
-            "Looks fine once it's styled, but straight out the bag it's a bit much.",
-            "The shade is nice but doesn't read super natural to me.",
-            "Had to tone it down a little to get it to blend properly.",
-            "Came out darker than the website photo, just a heads up.",
-            "Blends okay from far away but up close you can sort of tell.","The color ended up being darker than I expected from the photos.",
-    "The shade just wasn't the right match for my natural hair.",
-    "I had trouble getting it to blend because the color was slightly off.",
-    "The Natural Black looked a little too dark on me.",
-    "The hair itself was nice but the color didn't work for my hair tone.",
-    "I wish there were more color options available.",
-    "It blended okay indoors but the color difference was noticeable outside.",
-    "The shade looked different in person than it did online.",
-    "The color wasn't bad, it just didn't suit my hair.",
-    "I ended up needing to tone it to get a better match.",
-    "My leave out didn't blend as naturally as I hoped because of the color.",
-    "The color match was close but not close enough for everyday wear."
-        ],
+    "The shade ended up being slightly darker than I expected.",
+    "The color looked a little different in person than it did online.",
+    "The quality was nice but the color wasn't quite right for me.",
+    "I had some trouble getting the color to blend with my hair.",
+    "The shade was close, just not close enough for a seamless blend.",
+    "The color wasn't bad, it just didn't work with my hair tone.",
+    "I expected the color to be a little lighter.",
+    "The wig looked nice overall, but the color wasn't what I anticipated.",
+    "The shade was slightly off compared to the product photos.",
+    "I think a different color would have worked better for me.",
+    "The blend would have been much better if the color matched more closely.",
+    "The color difference was more noticeable in natural light."
+],
         "fit_usage": [
             "Clipping them in is easy enough, no complaints there.",
             "The clips are kinda bulky though, you can feel them a bit.",
@@ -373,13 +368,17 @@ SHORT_BODIES = {
         "So pretty and easy to use \U0001F60D", "Five stars, no notes.",
     ],
     "Neutral": [
-        "They're okay, nothing special.", "Decent for the price I suppose.",
-        "Bit shiny but otherwise fine.", "Alright, expected a little more.",
-        "Does the job, not amazing though.", "Fine, but kinda thin.",
-        "Color was slightly off for me.", "Good enough, not great.",
-        "Average, would've liked more hair.", "Okay quality, a touch shiny.",
-        "Middle of the road honestly.", "They're fine, nothing to write home about.",
-    ],
+    "Nice quality, just not the right color for me.",
+    "The shade was slightly off but the hair felt nice.",
+    "Good wig overall, color just didn't blend well.",
+    "Quality was great, color wasn't.",
+    "The wig was nice but the shade looked different in person.",
+    "Would probably try another color next time.",
+    "Not a bad wig, just the wrong shade for my hair.",
+    "The color match didn't work out for me.",
+    "Everything was fine except the color.",
+    "Hair was nice, color wasn't quite right."
+],
 }
 
 
