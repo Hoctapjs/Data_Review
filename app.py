@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Web app sinh dữ liệu review sản phẩm (tiếng Anh) - bản cải tiến.
-Schema khớp với JSON mẫu: title, body, rating, review_date, reviewer_name, reviewer_email.
-Chạy:  streamlit run app.py
+Web app sinh dữ liệu review sản phẩm (tiếng Anh) - Bản nâng cấp cho Straight Ponytail Extensions.
 """
 import random
 from datetime import date, timedelta
@@ -12,355 +10,285 @@ import pandas as pd
 import streamlit as st
 
 # ----------------------------------------------------------------------------
-# NGÂN HÀNG MẢNH GHÉP (tiếng Anh) - ghép ngẫu nhiên -> hàng trăm nghìn tổ hợp
-# 2 sắc thái: Positive (4-5★), Neutral (3★)
+# NGÂN HÀNG MẢNH GHÉP (tiếng Anh) - chuyên biệt cho Straight Ponytail
 # ----------------------------------------------------------------------------
 RATING = {"Positive": [5, 5, 5, 5, 4], "Neutral": [3, 3, 3]}
 
-# --- TITLE: ghép từ template + ngân hàng tính từ ---------------------------
 POS_ADJ = [
-    "natural",
-    "realistic",
-    "comfortable",
-    "soft",
-    "lightweight",
-    "smooth",
-    "beautiful",
-    "seamless",
-    "easy",
-    "flattering",
-    "versatile",
-    "well-made"
+    "natural", "realistic", "comfortable", "silky", "lightweight", "smooth",
+    "sleek", "seamless", "easy-to-use", "flattering", "secure", "thick"
 ]
+
 TITLE_TEMPLATES = {
     "Positive": [
-    "Looks just like my real hair",
-    "Exactly what I was looking for",
-    "Love how natural it looks",
-    "Very comfortable to wear",
-    "Beautiful straight hair",
-    "The blend is amazing",
-    "Easy to wear every day",
-    "One of my favorite wigs",
-    "Great quality and natural looking",
-    "Very happy with this purchase",
-    "The hair moves so naturally",
-    "Perfect for everyday wear",
-    "Lightweight and comfortable",
-    "Easy to install and style",
-    "Exceeded my expectations",
-    "Looks even better in person",
-    "Natural looking and easy to manage",
-    "Love this wig",
-    "A great protective style",
-    "Would definitely buy again",
-    "The hair feels amazing",
-    "So easy to blend",
-    "Looks very realistic",
-    "Comfortable all day",
-    "Beautiful from the first wear"
+        "Looks exactly like my real hair pony",
+        "Exactly what I was looking for!",
+        "Love how sleek and long it is",
+        "Very secure and comfortable to wear",
+        "Beautiful straight ponytail",
+        "The blend is absolutely amazing",
+        "My go-to for a quick bad hair day fix",
+        "One of my favorite hair pieces ever",
+        "Great quality and feels so real",
+        "Super happy with this purchase!",
+        "The hair swings so naturally",
+        "Perfect for a sleek high pony look",
+        "Lightweight and doesn't pull my head down",
+        "Easy to install and stays put all day",
+        "Exceeded my expectations for the price",
+        "Looks even better in person than the pics",
+        "Sleek, shiny, and super easy to manage",
+        "Love this ponytail extension!",
+        "Perfect instant length and volume",
+        "Would definitely buy again in a heartbeat",
+        "The fiber/hair feels incredibly soft",
+        "So easy to blend with my natural hair",
+        "Looks very realistic, not fake shiny",
+        "Comfortable to wear for 8+ hours",
+        "Beautiful right out of the packaging",
+        "A total game changer for quick hairstyles",
+        "Got so many compliments!",
+        "Saves me so much time in the morning",
+        "Perfect color match",
+        "Obsessed with this pony!"
     ],
     "Neutral": [
-    "Nice wig but the color wasn't right",
-    "Good quality, wrong shade for me",
-    "Color looked different in person",
-    "Wanted to love it but the color was off",
-    "Quality was good, color not so much",
-    "Close match but not quite",
-    "Nice overall but didn't blend perfectly",
-    "The color just didn't work for me",
-    "Good wig, difficult color match",
-    "Looks nice but not my shade"
+        "Nice ponytail but the color match was off",
+        "Good quality, just the wrong shade for me",
+        "Color looked different under natural light",
+        "Wanted to love it but the shade didn't fit",
+        "Quality was decent, color matching is tricky",
+        "Close match but you can tell it's fake hair",
+        "Nice overall but didn't blend perfectly with my ends",
+        "The tone just didn't work for my hair",
+        "Good hair extension, difficult color match",
+        "Looks nice but it's a bit too heavy",
+        "A little too shiny out of the box",
+        "Okay for the price but tangles easily",
+        "It's decent but the wrap-around part is bulky",
+        "Thinner than expected at the ends",
+        "It's okay, just takes some practice to secure"
     ],
 }
-TITLE_TEMPLATES["Positive"] += [
-    "Perfect color match for me",
-    "Worth it",
-    "Amazing!",
-    "Great extensions!",
-    "Perfect for my wedding day!",
-    "You can't even tell I'm wearing clip ins",
-    "These are GORGEOUS !!!",
-    "So happy with these",
-    "Exceeded my expectations",
-    "Exactly what I was looking for",
-]
-
-TITLE_TEMPLATES["Neutral"] += [
-    "Nice wig but the color wasn't right",
-    "Good quality, wrong shade for me",
-    "Color looked different in person",
-    "Wanted to love it but the color was off",
-    "Quality was good, color not so much",
-    "Close match but not quite",
-    "Nice overall but didn't blend perfectly",
-    "The color just didn't work for me",
-    "Good wig, difficult color match",
-    "Looks nice but not my shade"
-]
 
 NEU_MILD_ADJ = ["Decent", "Okay", "Fine", "Acceptable", "Average"]
-NEU_FLAW = ["thin", "shiny", "shed-prone", "pricey", "stiff"]
+NEU_FLAW = ["thin at the ends", "a bit synthetic shiny", "shed-prone", "heavy", "stiff"]
 
-# --- BODY: mỗi sắc thái có nhiều nhóm câu, mỗi câu đứng độc lập -------------
 BODY_BANK = {
     "Positive": {
         "opener": [
-   "I've been wearing wigs for a few years now and decided to try this one after seeing the reviews.",
-    "My natural hair has gotten a little thinner over the years, so I wanted something that looked natural without damaging my hair further.",
-    "I needed something quick for work every morning and this seemed like a good option.",
-    "I was tired of spending so much time styling my own hair every day.",
-    "I've tried several U Part Wigs before and wanted to see how this one compared.",
-    "I purchased this before a family event and ended up loving it more than expected.",
-    "I wanted a protective style that still looked like my own hair.",
-    "After watching a few videos online, I decided to give this wig a try.",
-    "I normally wear lace wigs, but I wanted something easier for everyday use.",
-    "I've been searching for a realistic straight wig for a while and finally decided to order this one.",
-    "I was looking for a style that looked polished without requiring much effort.",
-    "This was my first time trying a U Part Wig.",
-    "I wanted something lightweight that I could wear comfortably throughout the day.",
-    "I ordered this because I wanted extra length without committing to extensions.",
-    "I needed something simple that would blend naturally with my own hair."
-],
+            "I've been looking for a quick ponytail extension for a while and decided to risk it on this one.",
+            "My natural hair is pretty short and thin, so putting it into a decent pony is almost impossible.",
+            "I needed something quick and sleek for work mornings when I don't have time to blow dry my hair.",
+            "I was tired of spending an hour trying to flatten and style my own stubborn hair into a high pony.",
+            "I've tried a few different clip-in ponytails before and wanted to see how this one compared.",
+            "I purchased this right before an event and ended up loving it way more than I expected.",
+            "I wanted a protective style that gives me instant Ariana Grande vibes without the salon price.",
+            "After seeing a few tutorials online, I decided to give this wrap-around pony a try.",
+            "I normally wear full clip-in sets, but I wanted something way faster for everyday use.",
+            "I've been searching for a realistic, dead-straight ponytail and finally hit the jackpot with this.",
+            "I wanted a style that looked super polished and high-fashion without requiring 30 minutes of effort.",
+            "This was my very first time trying a drawstring/wrap ponytail extension.",
+            "I wanted something lightweight that wouldn't give me a headache after wearing it all day.",
+            "I ordered this because I wanted that sleek baddie look without committing to permanent tape-ins.",
+            "I needed a simple hairpiece that would blend effortlessly with my natural sleeked-back hair."
+        ],
         "quality": [
-    "The hair feels like real healthy hair and blends naturally with my own.",
-    "You can definitely tell it's human hair from the way it moves and feels.",
-    "The texture feels very similar to my natural straightened hair.",
-    "There isn't that synthetic shine that some wigs have.",
-    "The hair feels soft while still looking realistic.",
-    "I was impressed by how natural the strands looked up close.",
-    "The ends look healthy and full instead of thin.",
-    "The hair responds well to heat styling.",
-    "I curled it once and the style held surprisingly well.",
-    "After washing it, the hair remained soft and manageable.",
-    "The texture still looked beautiful after several wears.",
-    "The density feels natural and not overly heavy.",
-    "The strands move naturally when I walk.",
-    "It doesn't feel overly processed like some human hair wigs I've tried.",
-    "The quality reminds me of much more expensive wigs."
+            "The hair feels like healthy, salon-grade hair and flows beautifully.",
+            "It moves and shakes just like real hair, no awkward stiffness at all.",
+            "The texture is super smooth, exactly like freshly flat-ironed hair.",
+            "It doesn't have that cheap, blinding plastic shine that most synthetic pieces have.",
+            "The strands are incredibly soft while still maintaining a realistic thickness.",
+            "I was honestly impressed by how natural the fibers looked even up close under bright lights.",
+            "The ends look blunt and healthy instead of looking stringy or split.",
+            "The hair handles low-heat styling perfectly fine to match my texture.",
+            "I ran a straightener through it on low heat and it got even sleeker.",
+            "After comb-out and a bit of leave-in spray, it stayed incredibly soft and manageable.",
+            "The sleek texture held up beautifully even after a long night of dancing.",
+            "The density feels completely natural—not too thin, but not ridiculously heavy either.",
+            "The ponytail has a beautiful swing to it when I walk.",
+            "It doesn't feel overly coated or greasy like some extensions I've ordered online.",
+            "The quality feels premium, honestly mimicking much more expensive brands."
         ],
         "color": [
-    "The color looked very close to the product photos.",
-    "I was nervous about ordering online, but the shade matched what I expected.",
-    "The color looked natural in person.",
-    "The shade blended well with my own hair.",
-    "The listing photos were a pretty accurate representation.",
-    "The color looked even better in natural lighting.",
-    "I had no trouble blending the shade with my hair.",
-    "The tone looked realistic and not overly flat.",
-    "The color was exactly what I hoped it would be.",
-    "The shade looked very natural once installed."
-],
+            "The shade was an absolute perfect match to my current hair tone.",
+            "I was so nervous about trying to match my hair online, but it blended seamlessly.",
+            "The color looks incredibly multi-dimensional and natural in person.",
+            "It blended so well with my natural hair that you can't see the transition at all.",
+            "The product photos on the listing gave a very accurate representation of the actual tone.",
+            "The color looks even better and more vibrant when you step into natural sunlight.",
+            "I had zero trouble blending the piece with my own bun underneath.",
+            "The tone is realistic and has the right undertones without looking flat.",
+            "The color match was spot on, which is usually rare for me when buying hair online.",
+            "Once I wrapped the base section around, the color blend looked totally flawless."
+        ],
         "fit_usage": [
-    "It only took me a few minutes to install.",
-    "Getting ready in the morning is much faster now.",
-    "I like that I can take it off at night whenever I want.",
-    "The clips feel secure without pulling on my hair.",
-    "I didn't need any glue or complicated styling.",
-    "It's much easier than wearing a lace wig every day.",
-    "The wig sits flat against my head and feels secure.",
-    "I wore it all day without any discomfort.",
-    "The cap feels lightweight and breathable.",
-    "It has become my go-to protective style.",
-    "Installation was very beginner friendly.",
-    "I had it blended and ready in less than ten minutes."
-],
+            "It literally takes me less than two minutes to secure it and walk out the door.",
+            "Getting ready for school or work in the morning is a breeze now.",
+            "I love that the clip grips tightly onto my hair elastic without slipping down.",
+            "The built-in comb and velcro strap feel incredibly secure without pulling on my scalp.",
+            "I didn't need to use a million bobby pins to keep it from falling off.",
+            "It's so much more comfortable and less sweaty than wearing a full traditional wig.",
+            "The base sits flush against my natural bun and doesn't look bulky from the side.",
+            "I wore it through a whole 10-hour shift and didn't get a single tension headache.",
+            "The net attachment inside is very breathable and lightweight.",
+            "Installation is completely foolproof and beginner-friendly.",
+            "I had it clipped in, wrapped, and pinned in under sixty seconds flat."
+        ],
         "results": [
-            "Most people probably wouldn't notice, but I can tell they're extensions.",
-            "The overall look is decent once styled properly.",
-            "They add volume, which is what I wanted.",
-            "The end result is okay but not amazing.",
+            "The end result is an instant confidence booster.",
+            "It gives me that perfect, sleek Instagram look immediately.",
+            "It adds the exact amount of dramatic length and volume I wanted.",
+            "The overall look is super clean, professional, and classy."
         ],
         "extra": [
-    "Several people assumed it was my real hair.",
-    "My hairstylist was impressed with how natural it looked.",
-    "I've already worn it to work multiple times.",
-    "This has become my favorite everyday hairstyle.",
-    "I received compliments the first day I wore it.",
-    "A coworker asked if I had done something different with my hair.",
-    "The blend looked even better after I trimmed my leave out.",
-    "I find myself reaching for this wig more than any other one I own.",
-    "It photographs really well without looking overly shiny.",
-    "Nobody could tell where my hair ended and the wig began.",
-    "I appreciate how natural it looks in daylight.",
-    "I've worn it for long days and it stayed comfortable."
+            "Literally everyone at my office thought it was my real hair grown out.",
+            "My own hair stylist saw me wearing it and was shocked at how well it blended.",
+            "I've already worn it to multiple dinners and weekend outings.",
+            "This has officially become my signature look for lazy hair days.",
+            "I received at least five compliments within the first hour of wearing it out.",
+            "People just assume I got a professional blowout or premium salon extensions.",
+            "It photographs beautifully on camera without catching any fake glare.",
+            "Nobody could tell where my actual hair ended and the ponytail extension started.",
+            "I love how it stays sleek and tangle-free even when it's windy outside.",
+            "I've worn it for long, hot days and it stayed perfectly secure the whole time."
         ],
         "value": [
-            "For the price, I honestly think the quality is very good.",
-    "I've paid more for wigs that weren't nearly as nice as this one.",
-    "The quality exceeded what I expected at this price point.",
-    "It feels like a much more expensive wig.",
-    "I think this was a great value for the money.",
-    "Considering the quality of the hair, the price felt very reasonable.",
-    "I've purchased higher-priced wigs before and this one compares surprisingly well.",
-    "The construction and hair quality make it feel worth the investment.",
-    "I feel like I got exactly what I paid for, if not more.",
-    "For everyday wear, this is a great option without spending a fortune."
+            "For this price point, the quality is honestly unbeatable.",
+            "I've spent double the money on high-end beauty supply extensions that weren't this nice.",
+            "The value definitely exceeded what I expected for an affordable hair piece.",
+            "It looks and feels like a luxury luxury extension piece.",
+            "I think this is an absolute steal given how often I'm going to wear it.",
+            "Considering how great the fiber looks, the price is incredibly reasonable.",
+            "The construction of the wrap mechanism makes it well worth the investment.",
+            "I feel like I got way more value than what I actually paid for."
         ],
         "shipping": [
-           "My order arrived sooner than expected.",
-    "Shipping was faster than I anticipated.",
-    "The wig arrived well packaged and in good condition.",
-    "Everything was packed neatly and securely.",
-    "I was happy with how quickly my order was processed.",
-    "The packaging kept everything looking great during shipping.",
-    "My package arrived right on schedule.",
-    "The wig was ready to wear straight out of the package.",
-    "Delivery was smooth and hassle free.",
-    "I appreciated the careful packaging."
+            "The packaging was neat and it came with extra bobby pins, which was a nice touch.",
+            "Shipping was fast and the hair arrived perfectly straight with no weird kinks.",
+            "It arrived beautifully boxed so the hair wasn't squished or messy.",
+            "The package arrived a day earlier than estimated, super happy with that.",
+            "It was packed carefully to prevent any tangling during transit."
         ],
         "support": [
-            "Customer service was very helpful when I had a question before ordering.",
-    "The support team responded quickly to my inquiry.",
-    "I appreciated how helpful customer service was.",
-    "Communication throughout the process was excellent.",
-    "The seller was very responsive and professional.",
-    "I received a quick response when I needed assistance.",
-    "The company made the entire experience easy.",
-    "Customer support answered my questions clearly.",
-    "It was nice knowing help was available if needed.",
-    "The service matched the quality of the product."
+            "Customer service helped me pick the right option based on my root photos.",
+            "The seller was extremely helpful and responsive when I messaged them.",
+            "Great communication from the shop, they really care about customer satisfaction."
         ],
         "closer": [
-  "Overall I'm very happy with my purchase.",
-    "I'd definitely purchase this again.",
-    "I would recommend it to anyone looking for a natural everyday style.",
-    "This has been one of my better wig purchases.",
-    "I'm glad I decided to give it a try.",
-    "It was worth the investment for me.",
-    "I can see myself ordering another one in the future.",
-    "It has exceeded my expectations so far.",
-    "Very satisfied with the quality overall.",
-    "I'd happily recommend it to friends and family."
+            "Overall, I am absolutely in love with this ponytail.",
+            "I will definitely be purchasing another one as a backup.",
+            "Highly recommend this to anyone looking for an instant, effortless glow-up.",
+            "This is hands down one of my best online hair purchases.",
+            "I'm so incredibly glad I decided to click buy on this.",
+            "It's worth every single penny.",
+            "I see myself ordering a longer length from them very soon.",
+            "Super satisfied and will be telling all my friends about it."
         ],
     },
     "Neutral": {
         "opener": [
-            "So... I have mixed feelings about these honestly.",
-            "They're fine I guess, just not what I was picturing.",
-            "Wanted to love these but I'm kind of on the fence.",
-            "Not bad, not amazing, somewhere right in the middle.",
-            "Decent enough for the price, with a couple of buts.",
-            "Torn on these ones, there's good and bad.",
-            "They're alright, just didn't wow me the way I hoped.",
-            "Okay so it's a yes and a no for me.",
-            "I really wanted to love these but it's complicated.",
+            "So... I have slightly mixed feelings about this ponytail extension.",
+            "It's okay I guess, just wasn't exactly what I pictured in my head.",
+            "I really wanted to love this pony but I'm kind of on the fence.",
+            "Not terrible, but not mind-blowing either—somewhere right in the middle.",
+            "Decent enough extension for a quick style, but it has a few drawbacks.",
+            "I'm torn on this one; there are definitely pros and cons.",
+            "It's an alright hairpiece, it just didn't wow me like the reviews said.",
+            "Okay, so it's a bit of a hit and miss for me personally."
         ],
         "quality": [
-            "The hair is soft but it's SO shiny it almost looks fake in certain light.",
-            "Quality's okay, though the wefts are thinner than I hoped.",
-            "They shed a bit more than I'd like, found strands here and there.",
-            "Feels a little different from my real hair, can't quite explain it.",
-            "It's about what you'd expect for the money, nothing more.",
-            "Soft at first but got a little dry after a couple washes.",
-            "Decent thickness up top but it thins out toward the ends.",
-            "Holds a curl okay but drops faster than my natural hair.", "The hair quality itself was actually pretty nice.",
-    "The wig feels soft and well made.",
-    "The density looked natural enough.",
-    "The construction seemed solid overall.",
-    "The hair was smooth and easy to style.",
-    "I didn't have any issues with shedding.",
-    "The wig felt comfortable throughout the day.",
-    "The quality wasn't the problem for me.",
+            "The hair is soft, but it's SO shiny that it looks a little artificial in direct sunlight.",
+            "The quality is just okay; the hair gets thin pretty quickly toward the ends.",
+            "It sheds a bit more than I'd like when I run a wide-tooth comb through it.",
+            "The fiber feels a bit stiff and doesn't have that fluid swing of real hair.",
+            "It's about what you'd expect for the price tag—nothing premium.",
+            "It felt super silky at first but got a little dry and tangled after two wears.",
+            "It has decent thickness at the base, but the bottom half looks a bit skimpy.",
+            "The hair texture is smooth, but it tangles easily around the back of my neck."
         ],
         "color": [
-    "The shade ended up being slightly darker than I expected.",
-    "The color looked a little different in person than it did online.",
-    "The quality was nice but the color wasn't quite right for me.",
-    "I had some trouble getting the color to blend with my hair.",
-    "The shade was close, just not close enough for a seamless blend.",
-    "The color wasn't bad, it just didn't work with my hair tone.",
-    "I expected the color to be a little lighter.",
-    "The wig looked nice overall, but the color wasn't what I anticipated.",
-    "The shade was slightly off compared to the product photos.",
-    "I think a different color would have worked better for me.",
-    "The blend would have been much better if the color matched more closely.",
-    "The color difference was more noticeable in natural light."
-],
+            "The shade ended up being a hair darker than what was shown in the pictures.",
+            "The color tone looked a bit different in person compared to my screen.",
+            "The quality of the piece is fine, but the color matching is just hard online.",
+            "I had a bit of an issue getting the hair color to blend perfectly with my natural hair.",
+            "The shade was close, but you can see a slight contrast where my real hair ends.",
+            "The color wasn't bad, it just had a slightly warmer undertone than my own hair.",
+            "The color match wasn't quite seamless enough for me to wear it completely down.",
+            "The difference in color between my bun and the extension is noticeable in daylight."
+        ],
         "fit_usage": [
-            "Clipping them in is easy enough, no complaints there.",
-            "The clips are kinda bulky though, you can feel them a bit.",
-            "Takes some fiddling to get them to blend right.",
-            "Needed a bit of work before they looked believable.",
-            "The clips dig in a little if I wear them all day.",
-            "Had to trim them a bit to get a natural shape.",
+            "Clipping the comb into my hair tie is easy enough, but the piece feels heavy.",
+            "The wrap-around strand is a bit bulky and takes a lot of pins to secure tightly.",
+            "It takes some serious fiddling and hairspray to get it to stay up without sliding.",
+            "If you have fine hair like me, the weight of the pony pulls your hair down after an hour.",
+            "The comb attachment digs into my scalp a little bit if I wrap it too tight.",
+            "Had to use my own stronger bobby pins because the wrap strip kept unravelling."
         ],
         "results": [
-            "The end result is alright, not quite what I pictured.",
-            "Adds some volume but the look is just okay.",
-            "Decent once styled, but I can tell up close.",
-            "Does what it says, nothing wow about the result.",
+            "The final look is alright, just a bit more high-maintenance than I expected.",
+            "Adds length but makes my head look a little disproportionate because of the heavy base.",
+            "Looks decent from the front, but from the back, you can tell it's an attachment."
         ],
         "extra": [
-            "I'll probably keep them for occasional use rather than daily.",
-            "Might work better on someone with thicker hair than mine.",
-            "Returned my first set and the second was a bit better.",
-            "They're fine for photos but I can tell up close in person.",
-            "Wish they'd included a few extra clips honestly.",
-            "Texture isn't bad but it's not the wow I see in other reviews.",
+            "I'll probably keep it for costume parties or photos, but not for everyday wear.",
+            "This would definitely work better on someone with a thick, strong natural ponytail.",
+            "It's fine for social media photos, but up close in person, it looks a bit synthetic.",
+            "Wish the wrap section was made with a bit more hair to cover the velcro better."
         ],
         "value": [
-            "For the price it's about what you'd expect, no more.",
-            "Not sure it's worth it, but it's not a rip-off either.",
-            "Okay value, I've seen better for similar money.",
-            "Fair price I guess, just don't expect premium.",
+            "For the cheap price, it's fair. Just don't expect luxury salon quality.",
+            "It's not a total rip-off, but it's definitely an budget-tier item.",
+            "Average value—I've bought similar hairpieces at local beauty stores for less."
         ],
         "shipping": [
-            "Shipping took longer than I expected honestly.",
-            "Arrived on time, packaging was pretty basic though.",
-            "Delivery was fine, nothing fast but nothing terrible.",
-            "Took a couple weeks to show up, just so you know.",
+            "Shipping took a bit longer than expected and the tip of the pony was slightly bent.",
+            "Packaging was super basic, just a plastic bag, so the hair was a bit frizzy upon arrival."
         ],
         "support": [
-            "Reached out with a question and the reply was okay, a bit slow.",
-            "Customer service was fine, nothing that stood out.",
-            "Got my answer eventually, took a little while.",
+            "Reached out to the seller about a exchange and the reply was a bit slow."
         ],
         "closer": [
-            "Fine for the odd occasion, just not an everyday thing for me.",
-            "For the price I can't really complain too hard.",
-            "Wouldn't say I'm wowed, but they do the job.",
-            "Ended up ordering a second pack to get enough coverage.",
-            "They're okay, might shop around next time though.",
-            "Not sure I'd repurchase, but they're not bad either.",
-            "Three stars feels about right, decent but not special.",
-            "Middle of the road, they're neither great nor terrible.",
-            "Would consider another brand before reordering these.",
+            "It's fine for an occasional night out, just not a daily staple for me.",
+            "For what it costs, I can't complain too much, it gets the job done.",
+            "Wouldn't say I'm obsessed, but it's usable if you know how to style it.",
+            "I'll probably shop around for a higher-quality lightweight brand next time.",
+            "Three stars feels fair—decent product but has its flaws.",
+            "Middle of the road. Neither amazing nor terrible."
         ],
     },
 }
 
-# Một số review "một câu" cụt ngủn (giống phân bố review thật)
 SHORT_BODIES = {
     "Positive": [
-    "Very happy with this purchase.",
-    "The hair feels soft and natural.",
-    "Looks just like the photos.",
-    "Great quality and easy to wear.",
-    "Very comfortable all day.",
-    "The blend is amazing.",
-    "Easy to install and maintain.",
-    "Beautiful straight texture.",
-    "Would definitely buy again.",
-    "Looks very realistic.",
-    "The hair moves naturally.",
-    "Great everyday wig.",
-    "Exactly what I was looking for.",
-    "Comfortable and natural looking.",
-    "One of my favorite wigs so far."
-],
+        "Very happy with this ponytail extension, super sleek!",
+        "The hair feels soft, straight, and blends beautifully.",
+        "Looks exactly like the photos, love the instant length.",
+        "Great quality straight pony and very easy to put on.",
+        "Stays secure all day long without hurting my head.",
+        "The blend with my natural hair is absolutely amazing.",
+        "Easy to install, comb out, and maintain. 5 stars!",
+        "Beautiful silky straight texture. Exceeded my expectations.",
+        "Would definitely buy another one again soon.",
+        "Looks very realistic, no fake doll shine at all.",
+        "The ponytail moves naturally and gives great volume.",
+        "Perfect everyday pony for when I'm in a rush.",
+        "Exactly what I was looking for to get that sleek high pony look.",
+        "Super comfortable, lightweight, and natural looking.",
+        "One of my favorite quick hair pieces so far!"
+    ],
     "Neutral": [
-    "Nice quality, just not the right color for me.",
-    "The shade was slightly off but the hair felt nice.",
-    "Good wig overall, color just didn't blend well.",
-    "Quality was great, color wasn't.",
-    "The wig was nice but the shade looked different in person.",
-    "Would probably try another color next time.",
-    "Not a bad wig, just the wrong shade for my hair.",
-    "The color match didn't work out for me.",
-    "Everything was fine except the color.",
-    "Hair was nice, color wasn't quite right."
-],
+        "Nice quality extension, just couldn't get a perfect color match.",
+        "The shade was slightly off but the texture of the hair felt nice.",
+        "Good ponytail overall, the color just didn't blend perfectly with my hair.",
+        "The hair quality was fine, but the shade matching was difficult.",
+        "The ponytail was nice but the color looked different in person than online.",
+        "Would probably try a different shade or brand next time.",
+        "Not a bad hairpiece, just the wrong undertone for my natural hair.",
+        "The color match didn't work out for me but the return process was easy.",
+        "Everything was fine with the clip and wrap except the shade variance.",
+        "Hair was quite smooth, but the color wasn't quite right for my roots."
+    ],
 }
 
 
@@ -376,83 +304,79 @@ def build_title(sentiment):
 
 
 # ----------------------------------------------------------------------------
-# STORY-BASED BANKS - các mảnh ghép kể chuyện mua hàng (dùng chung 2 sắc thái)
+# STORY-BASED BANKS - Câu chuyện hậu trường đã đổi sang ngữ cảnh Ponytail
 # ----------------------------------------------------------------------------
 LIFE_EVENTS = [
-    "I bought these for my wedding and they photographed beautifully.",
-    "I got these for prom and honestly they made me feel so much more confident.",
-    "After having my second baby my hair started thinning and these helped a lot.",
-    "I've been dealing with hair loss recently so I wanted something to add volume.",
-    "I ordered these for a family vacation and ended up wearing them almost every day.",
-    "My natural hair has gotten thinner over the last few years so I wanted some extra fullness.",
-    "I needed something quick for an event and these worked perfectly.",
-    "I bought these for engagement photos and they looked amazing on camera.",
-    "I wanted longer hair without committing to permanent extensions.",
-    "I've always had fine hair so I was looking for extra thickness.",
+    "I bought this ponytail piece for my birthday dinner and it photographed beautifully.",
+    "I got this for a formal event and honestly it made me feel so sleek and confident.",
+    "After having a baby my hair thinned out, so this ponytail helps me feel put-together again.",
+    "I've been dealing with hair breakage, so I wanted an easy high-pony style to protect my ends.",
+    "I ordered this for a weekend trip and ended up wearing it to every single dinner.",
+    "My natural hair is just past my shoulders, so I needed this for that dramatic long look.",
+    "I needed something quick for a family photoshoot and this worked flawlessly.",
+    "I bought this for engagement photos and the sleek straight hair looked stunning on camera.",
+    "I wanted a long, high ponytail without paying hundreds for salon bondings.",
+    "I've always had fine hair that looks sad in a hair tie, so I needed this extra fullness."
 ]
 
 HAIR_SITUATIONS = [
-    "My hair is naturally pretty thin.",
-    "I have shoulder length hair and wanted more volume.",
-    "I've always struggled with fine hair.",
-    "My hair started shedding a lot this year.",
-    "I have thick hair but wanted extra length.",
-    "My ends have been looking really thin lately.",
-    "I wanted fuller hair without damaging my natural hair.",
-    "I've been trying to grow my hair out but it's taking forever.",
+    "My hair is naturally pretty fine and short.",
+    "I have shoulder-length hair and wanted a sleek long look.",
+    "I've always struggled with getting a high ponytail to look thick.",
+    "My natural hair is blunt cut, so blending can sometimes be tricky.",
+    "I have medium-thick hair but wanted that extra dramatic length down to my back.",
+    "My own ponytail always looks like a tiny stub, so I needed help.",
+    "I wanted a polished look without damaging my natural hair with constant heat.",
+    "I've been trying to grow my hair out but it's stuck at that awkward length."
 ]
 
 PRODUCT_DETAILS = [
-    "I ordered the 22 inch version.",
-    "I went with the 24 inch set.",
-    "I chose Chocolate Brown.",
-    "I picked Neutral Brown and it matched surprisingly well.",
-    "I ordered Platinum Blonde.",
-    "My hair is naturally dark brown.",
-    "I have fine hair and was worried the clips would show.",
+    "I ordered the 22-inch straight version.",
+    "I went with the 26-inch extra long set.",
+    "I chose the length that falls right around my mid-back.",
+    "The length I picked matched my expectations perfectly.",
+    "I have fine hair and was worried the wrap-around band would look too bulky.",
 ]
 
 MINOR_CONS = [
-    "The color looked a little darker in person but blended fine.",
-    "It took me a couple tries to get the placement right.",
-    "I probably should have ordered a second pack for extra volume.",
-    "The clips felt bulky at first but I got used to them.",
-    "I wish I had gone one shade lighter.",
-    "The ends were slightly thinner than I expected.",
-    "The first time putting them in took some practice.",
-    "I had to trim them slightly to blend better with my haircut.",
+    "The color looked a tiny bit darker in my bathroom but blended fine under normal light.",
+    "It took me a couple of tries to get the clip placement tight enough so it wouldn't slide.",
+    "It's a little bit heavy if you position it directly on the very top of your head.",
+    "The wrap strand felt stiff at first but it softened up with some manipulation.",
+    "I wish the velcro part was just a tiny bit smaller.",
+    "The ends were a little thinner than the top, but a quick trim fixed it.",
+    "The first time wrapping the extra hair around the base took some practice.",
+    "I had to bobby pin it down tightly to make sure it felt secure on my small head."
 ]
 
 RESULTS = [
-    "Nobody could tell I was wearing extensions.",
-    "The blend was seamless and looked completely natural.",
-    "I got so many compliments on my hair.",
-    "My stylist was impressed with the quality.",
-    "Even my husband noticed the difference.",
-    "They looked amazing in photos.",
-    "The extra volume made such a difference.",
-    "They gave me the long hair I've always wanted.",
+    "Nobody at the party could tell I was wearing an extension piece.",
+    "The blend at the base was seamless and looked completely natural.",
+    "I got so many compliments on how sleek my hair looked.",
+    "My friends were completely shocked when I told them it was a clip-on.",
+    "Even my boyfriend noticed how good the sleek high pony looked.",
+    "It looked incredibly chic and high-end in all my pictures.",
+    "The instant length and volume made such a massive difference.",
+    "It gave me that perfect bounce and sway when walking."
 ]
 
 RECOMMENDATIONS = [
-    "I'd definitely buy these again.",
-    "Really happy with this purchase.",
-    "Would absolutely recommend them.",
-    "Worth every penny in my opinion.",
-    "I'll probably order another set.",
-    "So glad I decided to try them.",
-    "I'd recommend them to anyone wanting more volume.",
-    "Definitely one of my better beauty purchases.",
+    "I'd definitely buy from this brand again.",
+    "Really happy with how this turned out.",
+    "Would absolutely recommend it if you love slicked-back styles.",
+    "Worth every single penny in my opinion.",
+    "I'll probably order another one in a different length just to have options.",
+    "So glad I decided to ignore the negative reviews and try it.",
+    "I'd highly recommend this to anyone with fine hair wanting a thick pony.",
+    "Definitely one of my better quick beauty purchases this year."
 ]
 
 
 def build_body(sentiment):
-    # ~12% là review ngắn một câu (giống phân bố thật)
     if random.random() < 0.12:
         return random.choice(SHORT_BODIES[sentiment])
 
     parts = []
-
     if random.random() < 0.8:
         parts.append(random.choice(LIFE_EVENTS))
 
@@ -462,7 +386,7 @@ def build_body(sentiment):
         parts.append(random.choice(PRODUCT_DETAILS))
 
     parts.append(random.choice(BODY_BANK[sentiment]["quality"]))
-
+    
     if random.random() < 0.8:
         parts.append(random.choice(BODY_BANK[sentiment]["color"]))
 
